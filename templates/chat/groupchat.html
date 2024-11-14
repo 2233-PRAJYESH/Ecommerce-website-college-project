@@ -1,0 +1,125 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<div class="container-fluid chat-container d-flex flex-row mb-3">
+    <div class="chat">
+        <div class="chat-head d-flex flex-column justify-content-start p-3">
+            <h2>Chats</h2>
+            <div class="search input-group">
+                <input class="form-control me-2" id="name-input" type="search" placeholder="Search"
+                    aria-label="Search" />
+                <button class="btn btn-success" id="name-submit" type="submit">Search</button>
+                <ul id="suggestions" class="dropdown suggestion-dropdown"></ul>
+            </div>
+        </div>
+        <div class="chat-list d-flex flex-column m-2 overflow-auto">
+            <div class="d-flex justify-content-around">
+                <ul class="nav nav-underline">
+                    <li class="nav-item">
+                        <a aria-current="page" href="{% url 'store:chat:chat' %}" class="nav-link active">Chats</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" style="background: #eeeeee;">Groups</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal fade" data-backdrop="static" data-keyboard="false" id="createGroupModal" tabindex="-1"
+                role="dialog" aria-labelledby="createGroupModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="createGroupModalLabel">Create New Group</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="form-wrapper">
+                                    <div class="name-input">
+                                        <label for="group-name">Enter group name</label><br />
+                                        <input class="form-control" type="text" name="group-name" id="group-name" required>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="selectedUsers()">Create group</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="list">
+                <div class="chat-item d-flex align-items-center" id="new-group" data-toggle="modal"
+                    data-target="#createGroupModal" style="background-color: #eee;">
+                    <div class="ml-2">
+                        Create New Group +
+                    </div>
+                </div>
+                {% for group in groups %}
+                <div class="chat-item d-flex align-items-center">
+                    <div class="ml-2">{{group}}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="chat-window d-flex flex-column">
+        <div class="chat-title d-flex">
+            <div class="title p-4" id="title"></div>
+        </div>
+        <div class="myborder"></div>
+        <div class="chat-area d-flex flex-column overflow-auto">
+            <div class="text-muted m-auto">
+                Your messages will appear here
+            </div>
+        </div>
+        {% if current_group %}
+        <div class="message-input-area">
+            <div class="input-group mb-3">
+                <input type="text" id="chat-message-input" class="form-control" placeholder="Type message here..."
+                    aria-label="Message input area" aria-describedby="button-addon2" />
+                <button class="btn btn-primary" type="button" id="chat-message-submit">
+                    Send
+                </button>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{{ current_user|json_script:"current-user" }}
+{{ groups|json_script:"groups" }}
+{{ current_group|json_script:"current-group" }}
+
+<script src="{% static 'js/chat/group.js' %}"></script>
+<script>
+    window.addEventListener("load", function () {
+        var headerHeight = document.getElementsByTagName("header")[0].clientHeight;
+        var footerHeight = document.getElementsByTagName("footer")[0].clientHeight;
+        var container = document.querySelector(".chat-container");
+
+        container.style.width = `calc(90vw - ${headerHeight}px - ${footerHeight}px)`;
+    });
+
+    document.querySelector("#name-input").focus();
+    document.querySelector("#name-input").onkeyup = function (e) {
+        if (e.key === "Enter") {
+            // enter, return
+            document.querySelector("#name-submit").click();
+        }
+    };
+
+    document.querySelector("#name-submit").onclick = function (e) {
+        var groupsData = JSON.parse(document.getElementById('groups').textContent);
+        var groupName = document.querySelector("#name-input").value;
+        groupsData.forEach(group => {
+            if (group === groupName) {
+                window.location.pathname = "/chat/group/chat/" + groupName + "/";
+            }
+        })
+    };
+</script>
+
+{% endblock content %}
