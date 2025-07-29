@@ -2,8 +2,11 @@ from store.forms import LoginForm, PasswordChangeForm, PasswordResetForm, SetPas
 from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
+<<<<<<< HEAD
 from . import views
 
+=======
+>>>>>>> 71ba33cb069cca9059a3f80edd9bc9fe51ae4d8d
 
 
 app_name = 'store'
@@ -55,7 +58,10 @@ urlpatterns = [
 
     path('product/test/', views.test, name="test"),
 
+<<<<<<< HEAD
     path('share-product/<int:product_id>/', views.share_product, name='share_product'),
 
 
+=======
+>>>>>>> 71ba33cb069cca9059a3f80edd9bc9fe51ae4d8d
 ]

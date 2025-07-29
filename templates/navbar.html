@@ -9,6 +9,7 @@
               <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
                   <!-- Link--><a class="nav-link active" href="{% url 'store:home' %}">Home</a>
+<<<<<<< HEAD
 
                 </li>
                 {% if user.is_authenticated %}
@@ -16,6 +17,9 @@
                   <a class="nav-link" href="{% url 'groups:create_group' %}">➕ Create Group</a>
                 </li>
                 {% endif %}
+=======
+                </li>
+>>>>>>> 71ba33cb069cca9059a3f80edd9bc9fe51ae4d8d
                 <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" id="pagesDropdown" target="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Categories</a>
                   <div class="dropdown-menu mt-3" aria-labelledby="pagesDropdown">
                     {% if categories_menu %}

@@ -71,6 +71,7 @@
             <span class="btn btn-link text-dark p-0 mb-4" onclick="formSubmit()"><i class="far fa-heart mr-2"></i>Add to wish list</span>
           </form>
           <a class="btn btn-link text-dark p-0 mb-4 ml-4" id="share" href="/chat?share={{product.slug}}"><i class="fas fa-share mr-2"></i>Share</a><br />
+<<<<<<< HEAD
           {% if user.is_authenticated %}
   <form method="post" action="{% url 'store:share_product' product.id %}" class="mb-4">
     {% csrf_token %}
@@ -88,6 +89,8 @@
   <p><a href="{% url 'login' %}">Login</a> to share this product with a group.</p>
 {% endif %}
 
+=======
+>>>>>>> 71ba33cb069cca9059a3f80edd9bc9fe51ae4d8d
           <ul class="list-unstyled small d-inline-block">
             <li class="px-3 py-2 mb-1 bg-white">
               <strong class="text-uppercase">SKU:</strong><span class="ml-2 text-muted">{{ product.sku }}</span>
