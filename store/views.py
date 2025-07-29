@@ -371,7 +371,7 @@ def shop(request):
 # This function is a placeholder for testing purposes.
 def test(request):
     return render(request, 'store/test.html')
-<<<<<<< HEAD
+
 
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404
@@ -390,5 +390,5 @@ def share_product(request, product_id):
         return redirect("store:product_detail", slug=product.slug)
 
     return redirect("store:shop")
-=======
->>>>>>> 71ba33cb069cca9059a3f80edd9bc9fe51ae4d8d
+
+

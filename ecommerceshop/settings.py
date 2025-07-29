@@ -34,11 +34,9 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'store',
     'chat',
-<<<<<<< HEAD
+
     'groups',
     
-=======
->>>>>>> 71ba33cb069cca9059a3f80edd9bc9fe51ae4d8d
     
 ]
 
