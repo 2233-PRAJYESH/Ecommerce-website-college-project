@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <title>{% block title %}E-commerce Shop{% endblock %}</title>
+    
+    <!-- Vendor CSS Files -->
     <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/lightbox2/css/lightbox.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendor/nouislider/nouislider.min.css' %}">
@@ -22,6 +24,7 @@
         {% endblock content %}
         {% include 'footer.html' %}
     </div>
+
     <!-- JavaScript files-->
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
