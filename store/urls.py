@@ -2,12 +2,14 @@ from store.forms import LoginForm, PasswordChangeForm, PasswordResetForm, SetPas
 from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
+from django.contrib import messages
 
 from . import views 
 
-
-
-
+class CustomLogoutView(auth_views.LogoutView):
+    def dispatch(self, request, *args, **kwargs):
+        messages.error(request, 'Successfully logged out!')  # Changed to error for red styling
+        return super().dispatch(request, *args, **kwargs)
 
 app_name = 'store'
 
@@ -46,7 +48,7 @@ urlpatterns = [
     path('accounts/profile/', views.profile, name="profile"),
     path('accounts/add-address/', views.AddressView.as_view(), name="add-address"),
     path('accounts/remove-address/<int:id>/', views.remove_address, name="remove-address"),
-    path('accounts/logout/', auth_views.LogoutView.as_view(
+    path('accounts/logout/', CustomLogoutView.as_view(
         template_name='registration/logged_out.html',
         next_page='store:login'
     ), name='logout'),
