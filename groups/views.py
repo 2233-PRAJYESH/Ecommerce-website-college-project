@@ -10,18 +10,14 @@ def create_group(request):
         name = request.POST.get('name')
         description = request.POST.get('description', '')
         
-        try:
-            group = Group.objects.create(
-                name=name,
-                description=description,
-                owner=request.user
-            )
-            group.members.add(request.user)
-            messages.success(request, 'Group created successfully!')
-            return redirect('groups:group_detail', group_id=group.id)
-        except Exception as e:
-            messages.error(request, f'Error creating group: {str(e)}')
-            
+        group = Group.objects.create(
+            name=name,
+            description=description,
+            owner=request.user
+        )
+        group.members.add(request.user)
+        messages.success(request, 'Group created successfully!')
+        return redirect('groups:group_detail', group_id=group.id)
     return render(request, 'groups/create_group.html')
 
 @login_required
