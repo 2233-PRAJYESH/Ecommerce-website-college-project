@@ -1,0 +1,2 @@
+# Ignore Django database file
+db.sqlite3
