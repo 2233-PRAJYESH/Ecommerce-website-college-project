@@ -33,9 +33,10 @@ Ecommerce-website-college-project/
 ├── dataset/                   # Dataset for recommendations
 ├── ecommerceshop/             # Main Django project configuration
 ├── media/                     # Uploaded product images
-├── static/                    # Static files (CSS, JS, etc.)
+├── static/                  # Static files (CSS, JS, etc.)
 ├── store/                     # Core e-commerce functionality
 ├── templates/                 # HTML templates
+├──  gitignore                 #Ignores 
 ├── Recommendation_System.ipynb # Product recommendation logic
 ├── db.sqlite3                 # Default SQLite database
 ├── manage.py                  # Django management script
