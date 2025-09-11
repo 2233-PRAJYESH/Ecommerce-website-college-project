@@ -35,7 +35,8 @@ Ecommerce-website-college-project/
 ├── media/                     # Uploaded product images
 ├── static/                    # Static files (CSS, JS, etc.)
 ├── store/                     # Core e-commerce functionality
-├── templates/                 # HTML templates
+├── templates/                 #  HTML templates
+├── gitignore                  #  Ignores files 
 ├── Recommendation_System.ipynb # Product recommendation logic
 ├── db.sqlite3                 # Default SQLite database
 ├── manage.py                  # Django management script
