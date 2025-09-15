@@ -21,13 +21,14 @@ import joblib, random
 
 # This function handles the homepage of the store, displaying featured categories and products.
 def home(request):
-    categories = Category.objects.filter(is_active=True, is_featured=True)[:3]
-    products = Product.objects.filter(is_active=True, is_featured=True)[:4]
+    products = Product.objects.all().order_by('-created_at')
+    categories = Category.objects.all() # Fetch all categories
     context = {
-        'categories': categories,
         'products': products,
+        'categories': categories, # Pass categories to the template
     }
     return render(request, 'store/index.html', context)
+
 
 
 # This function displays the details of a specific product, allows users to submit reviews,
@@ -363,6 +364,17 @@ def share_wishlist(request, wishlist_id):
 def orders(request):
     all_orders = Order.objects.filter(user=request.user).order_by('-ordered_date')
     return render(request, 'store/orders.html', {'orders': all_orders})
+from django.shortcuts import render
+from .models import Product, Category
+
+def home(request):
+    products = Product.objects.all().order_by('-created_at')
+    categories = Category.objects.all() # Fetch all categories
+    context = {
+        'products': products,
+        'categories': categories, # Pass categories to the template
+    }
+    return render(request, 'store/index.html', context)
 
 # This function handles the "Shop" page of the store.
 def shop(request):
