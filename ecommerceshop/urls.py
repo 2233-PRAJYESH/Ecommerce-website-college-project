@@ -9,8 +9,8 @@ urlpatterns = [
     path('', include('store.urls')),
 ]
 
-# To display images
+# This is the correct way to serve MEDIA files during development.
+# The static files are handled automatically by the dev server.
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    # REMOVE the line for STATIC_URL
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-

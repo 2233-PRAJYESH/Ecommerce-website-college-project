@@ -20,6 +20,7 @@ import joblib, random
 
 
 # This function handles the homepage of the store, displaying featured categories and products.
+
 def home(request):
     products = Product.objects.all().order_by('-created_at')
     categories = Category.objects.all() # Fetch all categories
