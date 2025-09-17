@@ -26,6 +26,7 @@ urlpatterns = [
     path('checkout/', views.checkout, name="checkout"),
     path('orders/', views.orders, name="orders"),
 
+
     # URL for Wishlists
     path('wishlist/', views.wishlist, name="wishlist"),
     path('wishlist/<int:wishlist_id>', views.share_wishlist, name="share-wishlist"),

@@ -1,15 +1,38 @@
-{% if products %}
-    {% for product in products %}
-        <div class="product-item">
-            <a href="{% url 'store:product-detail' product.slug %}">
-                {% if product.product_image %}
-                    <img src="{{ product.product_image.url }}" alt="{{ product.name }}">
-                {% endif %}
-                <h5>{{ product.name }}</h5>
-                <p>${{ product.price }}</p>
-            </a>
-        </div>
-    {% endfor %}
-{% else %}
-    <p>No products found in this category.</p>
-{% endif %}
+<div class="container py-5">
+    <div class="row">
+
+        {% if products %}
+            {% for product in products %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="product-card">
+                    <!-- ✅ Fixed link -->
+                    <a href="{% url 'store:product-detail' product.slug %}" class="product-card-link">
+                        {% if product.product_image %}
+                            <img src="{{ product.product_image.url }}" class="card-img-top" alt="{{ product.name }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <p class="product-brand text-muted">{{ product.category.name }}</p>
+                            
+                            <h5 class="product-name">{{ product.name|truncatewords:8 }}</h5>
+                            
+                            <div class="price-section">
+                                <span class="product-price">${{ product.price }}</span>
+                                {% if product.old_price %}
+                                <span class="product-old-price text-muted">
+                                    <del>${{ product.old_price }}</del>
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <p>There are no products available in this category.</p>
+            </div>
+        {% endif %}
+
+    </div>
+</div>

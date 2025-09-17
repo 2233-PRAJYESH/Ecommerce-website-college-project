@@ -101,7 +101,7 @@ def all_categories(request):
 def category_products(request, slug):
     category = get_object_or_404(Category, slug=slug)
     products = Product.objects.filter(is_active=True, category=category)
-    paginator = Paginator(products,6)
+    paginator = Paginator(products, 6)
     page_number = request.GET.get('page')
     products_final = paginator.get_page(page_number)
     categories = Category.objects.filter(is_active=True)
@@ -111,6 +111,7 @@ def category_products(request, slug):
         'categories': categories,
     }
     return render(request, 'store/category_products.html', context)
+
 
 # This function allows users to add or edit a review for a specific product.
 def add_review(request, slug):
@@ -384,6 +385,18 @@ def shop(request):
 # This function is a placeholder for testing purposes.
 def test(request):
     return render(request, 'store/test.html')
+from django.shortcuts import render, get_object_or_404
+from .models import Category, Product
+
+def home(request):
+    categories = Category.objects.all()
+    products = Product.objects.all()[:8]  # maybe showing trending products
+    return render(request, 'store/index.html', {
+        'categories': categories,
+        'products': products,
+    })
+
+
 
 
 from django.contrib import messages
