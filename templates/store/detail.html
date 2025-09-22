@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% csrf_token %}
 {% load custom_filters %}
-
 {% load static %}
 
 {% block content %}
@@ -45,52 +44,57 @@
           <p class="text-muted lead">${{ product.price }}</p>
           <p class="text-small mb-4">{{ product.short_description }}</p>
 
+          <!-- FIXED QUANTITY CONTROLS -->
           <div class="row align-items-stretch mb-4">
             <div class="col-sm-5 pr-sm-0">
               <div class="border d-flex align-items-center justify-content-between py-1 px-3 bg-white border-white">
                 <span class="small text-uppercase text-gray mr-4 no-select">Quantity</span>
-                <div class="quantity">
-                  <button class="dec-btn p-0"><i class="fas fa-caret-left"></i></button>
-                  <input name="quantity" class="form-control border-0 shadow-0 p-0" type="text" value="1" />
-                  <button class="inc-btn p-0"><i class="fas fa-caret-right"></i></button>
+                <div class="quantity d-flex align-items-center">
+                  <button type="button" class="btn btn-sm btn-outline-secondary" onclick="decreaseQuantity()" id="dec-btn">-</button>
+                  <input name="quantity" id="quantity-input" class="form-control border-0 shadow-0 p-0 text-center mx-2" type="number" value="1" min="1" style="width: 60px;" readonly />
+                  <button type="button" class="btn btn-sm btn-outline-secondary" onclick="increaseQuantity()" id="inc-btn">+</button>
                 </div>
               </div>
             </div>
 
             <div class="col-sm-3 pl-sm-0">
-              {% comment %} <a class="btn btn-dark btn-sm btn-block h-100 d-flex align-items-center justify-content-center px-0" href="{% url 'store:add-to-cart' %}">Add to cart</a> {% endcomment %}
-
-              <form action="{% url 'store:add-to-cart' %}">
+              <form action="{% url 'store:add-to-cart' %}" method="get">
                 <input type="hidden" name="prod_id" value="{{ product.id }}" id="product_id" />
+                <input type="hidden" name="quantity" id="cart-quantity" value="1" />
                 <button type="submit" class="btn btn-dark btn-lg btn-block h-100 d-flex align-items-center justify-content-center px-0">Add to Cart</button>
               </form>
             </div>
           </div>
+
           <form action="{% url 'store:add-to-wishlist' %}" id="wishlist-form" style="display: inline;">
             <input type="hidden" name="prod_id" value="{{ product.id }}" id="product_id" />
             <span class="btn btn-link text-dark p-0 mb-4" onclick="formSubmit()"><i class="far fa-heart mr-2"></i>Add to wish list</span>
           </form>
-          <a class="btn btn-link text-dark p-0 mb-4 ml-4" id="share" href="/chat?share={{product.slug}}"><i class="fas fa-share mr-2"></i>Share</a><br />
-<<<<<<< HEAD
-          {% if user.is_authenticated %}
-  <form method="post" action="{% url 'store:share_product' product.id %}" class="mb-4">
-    {% csrf_token %}
-    <label for="group_id" class="d-block font-weight-bold">Share with Group:</label>
-    <div class="d-flex align-items-center">
-      <select name="group_id" id="group_id" class="form-control mr-2" style="max-width: 250px;">
-        {% for group in user.groups_created.all %}
-          <option value="{{ group.id }}">{{ group.name }}</option>
-        {% endfor %}
-      </select>
-      <button type="submit" class="btn btn-success">Share</button>
-    </div>
-  </form>
-{% else %}
-  <p><a href="{% url 'login' %}">Login</a> to share this product with a group.</p>
-{% endif %}
+          <a class="btn btn-link text-dark p-0 mb-4 ml-4" id="share" href="#" onclick="shareProduct()">
+  <i class="fas fa-share mr-2"></i>Share
+</a><br />
 
-=======
->>>>>>> 71ba33cb069cca9059a3f80edd9bc9fe51ae4d8d
+          {% if user.is_authenticated %}
+            <div class="mb-4">
+              <form method="post" action="{% url 'store:share_product' product.id %}">
+                {% csrf_token %}
+                <label for="group_id" class="d-block font-weight-bold">Share with Group:</label>
+                <div class="d-flex align-items-center">
+                  <select name="group_id" id="group_id" class="form-control mr-2" style="max-width: 250px;">
+                    {% for group in user.groups_created.all %}
+                      <option value="{{ group.id }}">{{ group.name }}</option>
+                    {% empty %}
+                    <option value="">No groups available</option>
+                    {% endfor %}
+                  </select>
+                  <button type="submit" class="btn btn-success">Share</button>
+                </div>
+              </form>
+            </div>
+          {% else %}
+            <p><a href="{% url 'login' %}">Login</a> to share this product with a group.</p>
+          {% endif %}
+
           <ul class="list-unstyled small d-inline-block">
             <li class="px-3 py-2 mb-1 bg-white">
               <strong class="text-uppercase">SKU:</strong><span class="ml-2 text-muted">{{ product.sku }}</span>
@@ -150,8 +154,7 @@
                         <li>No reviews yet.</li>
                         {% endfor %}
                     </ul>
-                </div>
-                
+                  </div>
                 </div>
               </div>
             </div>
@@ -186,7 +189,7 @@
         </div>
         <div class="tab-pane fade" id="reccomendations" role="tabpanel" aria-labelledby="reccomendations-tab">
           <div class="row">
-            {% if user.is_authenticated and recproduct is not None %}
+            {% if user.is_authenticated and recproduct %}
               {% for rp in recproduct %}
                 <!-- PRODUCT -->
                 <div class="col-lg-3 col-sm-6">
@@ -206,7 +209,7 @@
                             <a class="btn btn-sm btn-outline-dark" href="#"><i class="far fa-heart"></i></a>
                           </li>
                           <li class="list-inline-item m-0 p-0">
-                            <a class="btn btn-sm btn-dark" href="{% url 'store:add-to-cart' %}">Add to cart</a>
+                            <a class="btn btn-sm btn-dark" href="{% url 'store:add-to-cart' %}?prod_id={{ rp.id }}">Add to cart</a>
                           </li>
                         </ul>
                       </div>
@@ -216,63 +219,22 @@
                   </div>
                 </div>
               {% endfor %}
-              {% else %}
-              <div style="
-              padding-top: 34px;
-              margin-left: 40px;
-          ">
-              <h2>No recommendations</h2>
-            </div>
+            {% else %}
+              <div class="p-4">
+                <h2>No recommendations available</h2>
+                <p>Please log in or add some reviews to see personalized recommendations.</p>
+              </div>
             {% endif %}
-
           </div>
         </div>
       </div>
-      <style>
-        .star:hover {
-          cursor: pointer;
-        }
-      </style>
 
-      <script>
-        document.addEventListener('DOMContentLoaded', function () {
-          const starRating = document.getElementById('star-rating')
-          const ratingInput = document.getElementById('id_rating')
-      
-          ratingInput.value = 0;
-          updateStars(0);
-      
-          starRating.addEventListener('click', (event) => {
-            const clickedStar = event.target
-            if (clickedStar.classList.contains('star')) {
-              const rating = parseInt(clickedStar.getAttribute('data-rating'))
-              ratingInput.value = rating
-              updateStars(rating)
-            }
-          })
-      
-          function updateStars(rating) {
-            const stars = starRating.querySelectorAll('.star')
-            stars.forEach((star) => {
-              const starRatingValue = parseInt(star.getAttribute('data-rating'))
-              star.textContent = starRatingValue <= rating ? '⭐' : '☆'
-            })
-          }
-        })
-
-        function formSubmit() {
-          let form = document.querySelector("#wishlist-form");
-          form.submit();
-        }
-      </script>
-      
       {% if msg %}
         <div class="alert alert-success">{{ msg }}</div>
       {% endif %}
+      
       <!-- RELATED PRODUCTS -->
-      <h2 class="h5 text-uppercase mb-4" style="
-      padding-top: 40px;
-  ">Related products</h2>
+      <h2 class="h5 text-uppercase mb-4 pt-4">Related products</h2>
       <div class="row">
         {% if related_products %}
           {% for rp in related_products %}
@@ -291,10 +253,10 @@
                   <div class="product-overlay">
                     <ul class="mb-0 list-inline">
                       <li class="list-inline-item m-0 p-0">
-                        <a class="btn btn-sm btn-outline-dark" href="#"><i class="far fa-heart"></i></a>
+                        <a class="btn btn-sm btn-outline-dark" href="{% url 'store:add-to-wishlist' %}?prod_id={{ rp.id }}"><i class="far fa-heart"></i></a>
                       </li>
                       <li class="list-inline-item m-0 p-0">
-                        <a class="btn btn-sm btn-dark" href="{% url 'store:add-to-cart' %}">Add to cart</a>
+                        <a class="btn btn-sm btn-dark" href="{% url 'store:add-to-cart' %}?prod_id={{ rp.id }}">Add to cart</a>
                       </li>
                     </ul>
                   </div>
@@ -308,4 +270,83 @@
       </div>
     </div>
   </section>
+
+  <script>
+    // Quantity control functions
+    function increaseQuantity() {
+        const quantityInput = document.getElementById('quantity-input');
+        const cartQuantity = document.getElementById('cart-quantity');
+        let currentValue = parseInt(quantityInput.value);
+        quantityInput.value = currentValue + 1;
+        cartQuantity.value = currentValue + 1;
+    }
+
+    function decreaseQuantity() {
+        const quantityInput = document.getElementById('quantity-input');
+        const cartQuantity = document.getElementById('cart-quantity');
+        let currentValue = parseInt(quantityInput.value);
+        if (currentValue > 1) {
+            quantityInput.value = currentValue - 1;
+            cartQuantity.value = currentValue - 1;
+        }
+    }
+
+    // Star rating system
+    document.addEventListener('DOMContentLoaded', function () {
+      const starRating = document.getElementById('star-rating')
+      const ratingInput = document.getElementById('id_rating')
+  
+      ratingInput.value = 0;
+      updateStars(0);
+  
+      starRating.addEventListener('click', (event) => {
+        const clickedStar = event.target
+        if (clickedStar.classList.contains('star')) {
+          const rating = parseInt(clickedStar.getAttribute('data-rating'))
+          ratingInput.value = rating
+          updateStars(rating)
+        }
+      })
+  
+      function updateStars(rating) {
+        const stars = starRating.querySelectorAll('.star')
+        stars.forEach((star) => {
+          const starRatingValue = parseInt(star.getAttribute('data-rating'))
+          star.textContent = starRatingValue <= rating ? '⭐' : '☆'
+        })
+      }
+    })
+
+    // Wishlist form submission
+    function formSubmit() {
+      let form = document.querySelector("#wishlist-form");
+      form.submit();
+    }
+    function shareProduct() {
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ product.title }}',
+            text: '{{ product.short_description }}',
+            url: window.location.href,
+        });
+    } else {
+        // Fallback for browsers that don't support Web Share API
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+            alert('Product link copied to clipboard!');
+        });
+    }
+}
+  </script>
+
+  <style>
+    .star:hover {
+      cursor: pointer;
+    }
+    .quantity button {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+    }
+  </style>
 {% endblock %}

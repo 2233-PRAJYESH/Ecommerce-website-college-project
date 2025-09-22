@@ -19,6 +19,27 @@ from surprise import accuracy
 import joblib, random
 
 
+import django
+from django.contrib.auth.models import User
+from store.models import Address, Cart, Category, Order, Product, Wishlist
+from django.shortcuts import redirect, render, get_object_or_404
+from .forms import RegistrationForm, AddressForm
+from django.contrib import messages
+from django.views import View
+import decimal
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator # for Class Based Views
+from django.core.paginator import Paginator
+from .forms import ReviewForm
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Product, Review
+import pandas as pd
+from surprise import Dataset, Reader, SVD
+from surprise.model_selection import train_test_split
+from surprise import accuracy
+import joblib, random
+
+
 # This function handles the homepage of the store, displaying featured categories and products.
 
 def home(request):
@@ -34,11 +55,21 @@ def home(request):
 
 # This function displays the details of a specific product, allows users to submit reviews,
 # and provides recommendations based on user reviews.
+# This function displays the details of a specific product, allows users to submit reviews,
+# and provides recommendations based on user reviews.
 def detail(request, slug):
     product = get_object_or_404(Product, slug=slug)
     related_products = Product.objects.exclude(id=product.id).filter(is_active=True, category=product.category)[:4]
-    form = ReviewForm(request.POST)
-
+    
+    # Get user's groups if authenticated
+    user_groups = []
+    if request.user.is_authenticated:
+        try:
+            from groups.models import Group
+            user_groups = Group.objects.filter(created_by=request.user)
+        except:
+            user_groups = []
+    
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
@@ -46,50 +77,25 @@ def detail(request, slug):
             review.product = product
             review.user = request.user 
             review.save()
-            # return redirect('detail', slug=slug)
+            messages.success(request, "Review submitted successfully!")
+            return redirect('store:product-detail', slug=slug)
     else:
         form = ReviewForm()
 
-    review= Review.objects.filter(product=product).order_by('-rating')
-    objects = Review.objects.all()
-    user_id=request.user.id
-    dataset = []
-    model = joblib.load('store/recommendation_model.pkl')
-    for review in objects:
-        dataset.append({
-            'UserID': review.user.id,
-            'ProductID': review.product.id,
-            'Rating': review.rating,
-        })
-    ratings_data = pd.DataFrame(dataset)
-    reader = Reader(rating_scale=(0, 1))
+    reviews = Review.objects.filter(product=product).order_by('-rating')
+    
+    # Temporarily disable recommendation system to fix the error
+    recproduct = related_products
 
-    data = Dataset.load_from_df(ratings_data[['UserID','ProductID','Rating']], reader)
-
-    trainset, testset = train_test_split(data, test_size=0.01)
-    top_n=5
-
-    testset = trainset.build_anti_testset()
-    testset = list(filter(lambda x: x[0] == user_id, testset))
-    print("Testset:",testset)
-    if len(testset)!=0:
-        predictions = model.test(testset)
-
-        predictions.sort(key=lambda x: x.est, reverse=True)
-        
-        top_n_recommendations = predictions    
-        recommended_product_ids = [prediction.iid for prediction in predictions]
-        final=recommended_product_ids[0:4]
-        recproduct=Product.objects.filter(id__in=final)
-        print("recproduct",recproduct)
-    recproduct = None   
     context = {
         'product': product,
         'related_products': related_products,
-        'form':form,
-        'recproduct':recproduct,
+        'form': form,
+        'reviews': reviews,
+        'recproduct': recproduct,
+        'user_groups': user_groups,  # Add this line
     }
-    print(user_id)
+    
     return render(request, 'store/detail.html', context)
 
 # This function displays all the categories available in the store.
@@ -227,16 +233,16 @@ def remove_address(request, id):
 def add_to_cart(request):
     user = request.user
     product_id = request.GET.get('prod_id')
+    quantity = int(request.GET.get('quantity', 1))  # Add this line
     product = get_object_or_404(Product, id=product_id)
 
-    # Check whether the Product is alread in Cart or Not
     item_already_in_cart = Cart.objects.filter(product=product_id, user=user)
     if item_already_in_cart:
         cp = get_object_or_404(Cart, product=product_id, user=user)
-        cp.quantity += 1
+        cp.quantity += quantity  # Change this line
         cp.save()
     else:
-        Cart(user=user, product=product).save()
+        Cart(user=user, product=product, quantity=quantity).save()  # Change this line
     
     return redirect('store:cart')
 
@@ -413,7 +419,7 @@ def share_product(request, product_id):
 
         group.shared_products.add(product)
         messages.success(request, f"Product '{product.title}' shared to group '{group.name}'.")
-        return redirect("store:product_detail", slug=product.slug)
+        return redirect("store:product-detail", slug=product.slug)
 
     return redirect("store:shop")
 

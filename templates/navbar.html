@@ -1,75 +1,219 @@
 {% load static %}
 
-<!-- navbar-->
-      <header class="header bg-white" style="max-width: 2000px;">
-        <div class="container px-0 px-lg-3">
-          <nav class="navbar navbar-expand-lg navbar-light py-3 px-lg-0"><a class="navbar-brand" href="{% url 'store:home' %}"><span class="font-weight-bold text-uppercase text-dark">Ecommerce</span></a>
-            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                  <!-- Link--><a class="nav-link active" href="{% url 'store:home' %}">Home</a>
+<!-- Modern navbar with improved styling -->
+<header class="header bg-white shadow-sm border-bottom">
+  <div class="container-fluid px-3 px-lg-4">
+    <nav class="navbar navbar-expand-lg navbar-light py-2">
+      
+      <!-- Brand/Logo -->
+      <a class="navbar-brand d-flex align-items-center" href="{% url 'store:home' %}">
+        <span class="font-weight-bold text-uppercase" style="font-size: 1.5rem; color: #2c3e50; letter-spacing: 1px;">
+          ECOMMERCE
+        </span>
+      </a>
 
+      <!-- Mobile toggle button -->
+      <button class="navbar-toggler border-0 px-2" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-                </li>
-                {% if user.is_authenticated %}
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'groups:create_group' %}">➕ Create Group</a>
-                </li>
-                {% endif %}
+      <!-- Navbar content -->
+      <div class="collapse navbar-collapse" id="navbarContent">
+        
+        <!-- Left side navigation -->
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link font-weight-medium px-3" href="{% url 'store:home' %}">
+              <i class="fas fa-home mr-1"></i>Home
+            </a>
+          </li>
 
-                </li>
+          {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link font-weight-medium px-3" href="{% url 'groups:create_group' %}">
+              <i class="fas fa-plus-circle mr-1"></i>Create Group
+            </a>
+          </li>
+          {% endif %}
 
-                <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" id="pagesDropdown" target="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Categories</a>
-                  <div class="dropdown-menu mt-3" aria-labelledby="pagesDropdown">
-                    {% if categories_menu %}
-                      {% for cat_menu in categories_menu %}
-                        <a class="dropdown-item border-0 transition-link" href="{% url 'store:category-products' cat_menu.slug %}">{{cat_menu.title}}</a>
-                      {% endfor %}
-                    {% endif %}
-                    <hr>
-                    <a class="dropdown-item border-0 transition-link" href="#category">All Categories</a>
-                    
-                </li>
-                <li class="nav-item">
-                  <!-- Link--><a class="nav-link" href="{% url 'store:home' %}">Blog</a>
-                </li>
-                <li class="nav-item">
-                  <!-- Link--><a class="nav-link" href="{% url 'store:home' %}">Contact</a>
-                </li>
-              </ul>
-              <ul class="navbar-nav ml-auto"> 
-                {% if request.user.is_authenticated %}           
-                  <li class="nav-item"><a class="nav-link" href="{% url 'store:cart' %}"> <i class="fas fa-dolly-flatbed mr-1 text-gray"></i>Cart<small class="text-gray">({{cart_items.count}})</small></a></li>
-                  <li class="nav-item"><a class="nav-link" href="{% url 'store:wishlist' %}"> <i class="far fa-heart mr-1"></i></a></li>
-                  {% comment %} <li class="nav-item"><a class="nav-link" href="#"> <i class="fas fa-user-alt mr-1 text-gray"></i>My Account</a></li> {% endcomment %}
-
-                  <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" id="pagesDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-alt mr-1 text-gray"></i>My Account</a></a>
-                  
-                  <div class="dropdown-menu mt-3" aria-labelledby="pagesDropdown">
-                    
-                      <a class="dropdown-item border-0 transition-link" href="{% url 'store:profile' %}">Profile</a>
-                      <a class="dropdown-item border-0 transition-link" href="{% url 'store:cart' %}">Cart</a>
-                      <a class="dropdown-item border-0 transition-link" href="{% url 'store:orders' %}">Orders</a>
-                      <a class="dropdown-item border-0 transition-link" href="{% url 'store:password-change' %}">Change Password</a>
-
-                    <hr>
-                    <form action="{% url 'store:logout' %}" method="post" id="logout-form" class="d-inline">
-    {% csrf_token %}
-    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" 
-       class="nav-link">
-        <i class="fas fa-sign-out-alt"></i> Logout
-    </a>
-</form>
-                    
-                </li>
-                {% else %}
-                  <li class="nav-item"><a class="nav-link" href="{% url 'store:login' %}">Login</a></li>
-                  <li class="nav-item"><a class="nav-link" href="{% url 'store:register' %}">Create Account</a></li>
-                {% endif %}   
-              </ul>
+          <!-- Categories Dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle font-weight-medium px-3" href="#" id="categoriesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-th-large mr-1"></i>Categories
+            </a>
+            <div class="dropdown-menu border-0 shadow-lg mt-2" aria-labelledby="categoriesDropdown" style="min-width: 200px;">
+              {% if categories_menu %}
+                {% for cat_menu in categories_menu %}
+                  <a class="dropdown-item py-2 px-3 d-flex align-items-center" href="{% url 'store:category-products' cat_menu.slug %}">
+                    <i class="fas fa-tag mr-2 text-muted"></i>{{cat_menu.title}}
+                  </a>
+                {% endfor %}
+                <div class="dropdown-divider my-1"></div>
+              {% endif %}
+              <a class="dropdown-item py-2 px-3 d-flex align-items-center font-weight-medium" href="{% url 'store:all-categories' %}">
+                <i class="fas fa-list mr-2 text-primary"></i>All Categories
+              </a>
             </div>
-          </nav>
-        </div>
-      </header>
+          </li>
 
+          <li class="nav-item">
+            <a class="nav-link font-weight-medium px-3" href="{% url 'store:home' %}">
+              <i class="fas fa-blog mr-1"></i>Blog
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link font-weight-medium px-3" href="{% url 'store:home' %}">
+              <i class="fas fa-envelope mr-1"></i>Contact
+            </a>
+          </li>
+        </ul>
+
+        <!-- Right side navigation -->
+        <ul class="navbar-nav ml-auto align-items-center">
+          {% if request.user.is_authenticated %}
+            
+            <!-- Cart -->
+            <li class="nav-item mr-2">
+              <a class="nav-link d-flex align-items-center position-relative px-3 py-2 rounded" href="{% url 'store:cart' %}" style="background: #f8f9fa; border: 1px solid #dee2e6;">
+                <i class="fas fa-shopping-cart mr-2 text-primary"></i>
+                <span class="font-weight-medium">Cart</span>
+                {% if cart_items.count > 0 %}
+                <span class="badge badge-primary badge-pill ml-2">{{cart_items.count}}</span>
+                {% endif %}
+              </a>
+            </li>
+
+            <!-- Wishlist -->
+            <li class="nav-item mr-2">
+              <a class="nav-link px-3 py-2 rounded d-flex align-items-center" href="{% url 'store:wishlist' %}" style="background: #fff5f5; border: 1px solid #fed7d7; color: #e53e3e;">
+                <i class="fas fa-heart"></i>
+              </a>
+            </li>
+
+            <!-- User Account Dropdown -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle d-flex align-items-center px-3 py-2 rounded font-weight-medium" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background: #e8f4f8; border: 1px solid #bee5eb; color: #0c5460;">
+                <i class="fas fa-user-circle mr-2"></i>
+                <span class="d-none d-md-inline">My Account</span>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right border-0 shadow-lg mt-2" aria-labelledby="userDropdown" style="min-width: 180px;">
+                <div class="dropdown-header px-3 py-2 bg-light">
+                  <small class="text-muted">Welcome, {{user.first_name|default:user.username}}</small>
+                </div>
+                <div class="dropdown-divider my-0"></div>
+                <a class="dropdown-item py-2 px-3 d-flex align-items-center" href="{% url 'store:profile' %}">
+                  <i class="fas fa-user mr-2 text-muted"></i>Profile
+                </a>
+                <a class="dropdown-item py-2 px-3 d-flex align-items-center" href="{% url 'store:cart' %}">
+                  <i class="fas fa-shopping-bag mr-2 text-muted"></i>Cart
+                </a>
+                <a class="dropdown-item py-2 px-3 d-flex align-items-center" href="{% url 'store:orders' %}">
+                  <i class="fas fa-box mr-2 text-muted"></i>Orders
+                </a>
+                <a class="dropdown-item py-2 px-3 d-flex align-items-center" href="{% url 'store:password-change' %}">
+                  <i class="fas fa-key mr-2 text-muted"></i>Change Password
+                </a>
+                <div class="dropdown-divider my-1"></div>
+                <form action="{% url 'store:logout' %}" method="post" id="logout-form" class="m-0">
+                  {% csrf_token %}
+                  <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="dropdown-item py-2 px-3 d-flex align-items-center text-danger">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                  </a>
+                </form>
+              </div>
+            </li>
+
+          {% else %}
+            <!-- Login/Register for non-authenticated users -->
+            <li class="nav-item mr-2">
+              <a class="nav-link px-3 py-2 rounded font-weight-medium" href="{% url 'store:login' %}" style="background: #e8f4f8; border: 1px solid #bee5eb; color: #0c5460;">
+                <i class="fas fa-sign-in-alt mr-1"></i>Login
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link px-3 py-2 rounded font-weight-medium text-white" href="{% url 'store:register' %}" style="background: #007bff; border: 1px solid #007bff;">
+                <i class="fas fa-user-plus mr-1"></i>Sign Up
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- Custom CSS for enhanced styling -->
+<style>
+  /* Navbar hover effects */
+  .navbar-nav .nav-link {
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    margin: 0 2px;
+  }
+
+  .navbar-nav .nav-link:hover {
+    background-color: #f8f9fa !important;
+    transform: translateY(-1px);
+  }
+
+  /* Dropdown styling */
+  .dropdown-menu {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    animation: dropdownFade 0.3s ease;
+  }
+
+  @keyframes dropdownFade {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .dropdown-item {
+    border-radius: 4px;
+    margin: 2px 0;
+    transition: all 0.2s ease;
+  }
+
+  .dropdown-item:hover {
+    background-color: #f1f3f4;
+    transform: translateX(4px);
+  }
+
+  /* Brand styling */
+  .navbar-brand:hover {
+    transform: scale(1.02);
+    transition: all 0.2s ease;
+  }
+
+  /* Badge styling */
+  .badge-pill {
+    font-size: 0.7rem;
+    padding: 0.25em 0.5em;
+  }
+
+  /* Mobile responsiveness */
+  @media (max-width: 991px) {
+    .navbar-nav .nav-item {
+      margin: 2px 0;
+    }
+    
+    .dropdown-menu {
+      border: 1px solid #dee2e6;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+  }
+
+  /* Border separator */
+  .border-bottom {
+    border-bottom: 1px solid #e9ecef !important;
+  }
+
+  /* Active state */
+  .nav-link.active {
+    background-color: #e3f2fd !important;
+    color: #1976d2 !important;
+    font-weight: 600;
+  }
+</style>
