@@ -414,13 +414,29 @@ from groups.models import Group  # assuming your app is named 'groups'
 def share_product(request, product_id):
     if request.method == "POST":
         group_id = request.POST.get("group_id")
-        group = get_object_or_404(Group, id=group_id, created_by=request.user)
-        product = get_object_or_404(Product, id=product_id)
+        
+        # Check if group_id is valid
+        if not group_id or group_id == '':
+            messages.error(request, "Please select a group to share with.")
+            product = get_object_or_404(Product, id=product_id)
+            return redirect("store:product-detail", slug=product.slug)
+        
+        try:
+            from groups.models import Group
+            group = get_object_or_404(Group, id=group_id, created_by=request.user)
+            product = get_object_or_404(Product, id=product_id)
 
-        group.shared_products.add(product)
-        messages.success(request, f"Product '{product.title}' shared to group '{group.name}'.")
-        return redirect("store:product-detail", slug=product.slug)
+            group.shared_products.add(product)
+            messages.success(request, f"Product '{product.title}' shared to group '{group.name}'.")
+            return redirect("store:product-detail", slug=product.slug)
+        except ValueError:
+            messages.error(request, "Invalid group selected.")
+            product = get_object_or_404(Product, id=product_id)
+            return redirect("store:product-detail", slug=product.slug)
+        except Exception as e:
+            messages.error(request, "Error sharing product. Please try again.")
+            product = get_object_or_404(Product, id=product_id)
+            return redirect("store:product-detail", slug=product.slug)
 
     return redirect("store:shop")
-
 

@@ -2,160 +2,316 @@
 {% load static %}
 
 {% block content %}
-<!-- HERO SECTION-->
-<div class="container" style="max-width: 1524px;">
-    <section class="hero pb-3 bg-cover bg-center d-flex align-items-end" style="background-image:url('{% static 'img/hero-jewlrey-banner.jpg' %}')">
-        <div class="container py-10" style="
-        margin-top: 380px;
-        max-width: 1528px;
-        ">
-            <div class="row px-4 px-lg-2">
-                <div class="">
-                    <p class="text-muted small text-uppercase mb-2">New Inspiration 2020</p>
-                    <h1 class="h2 text-uppercase mb-3">20% off on new season</h1>
-                    <a class="btn btn-dark" href="{% url 'store:all-categories' %}">Browse collections</a>
+<!-- HERO SECTION with Modern Design -->
+<div class="hero-container">
+    <section class="hero-section position-relative overflow-hidden" style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); min-height: 70vh;">
+        <div class="hero-overlay position-absolute w-100 h-100" style="background: rgba(0,0,0,0.2);"></div>
+        <div class="container position-relative h-100 d-flex align-items-center justify-content-center" style="max-width: 1400px; min-height: 70vh;">
+            <div class="text-center text-white">
+                <div class="hero-content" style="animation: fadeInUp 1s ease;">
+                    <h1 class="display-1 font-weight-bold mb-4" style="line-height: 1.2; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); letter-spacing: 3px;">
+                        ECOMX
+                    </h1>
+                    <p class="lead mb-4" style="font-size: 1.3rem; opacity: 0.95; max-width: 600px; margin: 0 auto;">Premium Fashion & Lifestyle Collection</p>
+                    <a class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill" href="{% url 'store:all-categories' %}" style="border: 2px solid #fff; transition: all 0.3s ease;">
+                        <i class="fas fa-shopping-bag mr-2"></i>Explore Collection
+                    </a>
                 </div>
             </div>
         </div>
+        
+        <!-- Floating elements for visual appeal -->
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
     </section>
+</div>
 
-    <!-- CATEGORIES SECTION-->
-    <div id="category">
-        <section class="pt-5">
-            <header class="text-center">
-                <p class="small text-muted small text-uppercase mb-1">Carefully created collections</p>
-                <h2 class="h5 text-uppercase mb-4">Browse our categories</h2>
-            </header>
-            <div class="row">
-                {% if categories %}
-                {% for category in categories %}
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <a class="category-item" href="{% url 'store:category-products' category.slug %}">
-                        {% if category.category_image %}
-                        <img class="img-fluid" src="{{ category.category_image.url }}" alt="{{ category.title }}" style="height: 600px;">
-                        {% else %}
-                        <img class="img-fluid" src="{% static 'img/cat-img-1.jpg' %}" alt="{{ category.title }}">
-                        {% endif %}
-                        <strong class="category-item-title">{{ category.title }}</strong>
-                    </a>
-                </div>
-                {% endfor %}
-                {% endif %}
-            </div>
-        </section>
-    </div>
-
-    <!-- TRENDING PRODUCTS-->
-    <section class="py-5">
-        <header>
-            <p class="small text-muted small text-uppercase mb-1">Made the hard way</p>
-            <h2 class="h5 text-uppercase mb-4">Top trending products</h2>
-        </header>
-        <div class="row">
-            {% if products %}
-            {% for product in products %}
-            <!-- PRODUCT-->
-            <div class="col-xl-3 col-lg-4 col-sm-6">
-                <div class="product text-center">
-                    <div class="position-relative mb-3">
-                        <div class="badge text-white badge-"></div>
-                        <a class="d-block" href="{% url 'store:product-detail' product.id %}">
-                            {% if product.product_image %}
-                            <img class="img-fluid w-100" src="{{ product.product_image.url }}" alt="{{product.name}}">
-                            {% else %}
-                            <img class="img-fluid w-100" src="{% static 'img/product-1.jpg' %}" alt="{{product.name}}">
-                            {% endif %}
-                        </a>
-
-                        <div class="product-overlay">
-                            <ul class="mb-0 list-inline">
-                                <li class="list-inline-item m-0 p-0"><a class="btn btn-sm btn-outline-dark" href="#"><i class="far fa-heart"></i></a></li>
-                                <li class="list-inline-item m-0 p-0">
-                                    <form action="{% url 'store:add-to-cart' %}">
-                                        <input type="hidden" name="prod_id" value="{{product.id}}" id="product_id">
-                                        <button type="submit" class="btn btn-sm btn-dark">Add to Cart</button>
-                                    </form>
-                                </li>
-                            </ul>
+<!-- CATEGORIES SECTION with Modern Cards -->
+<section class="categories-section py-5" style="background: #ffffff;">
+    <div class="container" style="max-width: 1400px;">
+        <div class="text-center mb-5">
+            <p class="text-muted text-uppercase mb-2" style="font-size: 0.9rem; letter-spacing: 1px;">Carefully Curated Collections</p>
+            <h2 class="h2 font-weight-bold mb-4" style="color: #2c3e50;">Browse Our Categories</h2>
+            <div class="divider mx-auto mb-4" style="width: 60px; height: 3px; background: #2c3e50;"></div>
+        </div>
+        
+        <div class="row justify-content-center">
+            {% if categories %}
+            {% for category in categories|slice:":2" %}
+            <div class="col-lg-5 col-md-6 mb-4">
+                <div class="category-card position-relative overflow-hidden rounded-4" style="height: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer; border: 2px solid #f0f0f0;" onclick="location.href='{% url 'store:category-products' category.slug %}'">
+                    {% if category.category_image %}
+                    <img class="category-image w-100 h-100" src="{{ category.category_image.url }}" alt="{{ category.title }}" style="object-fit: cover; transition: transform 0.5s ease;">
+                    {% else %}
+                    <img class="category-image w-100 h-100" src="{% static 'img/cat-img-1.jpg' %}" alt="{{ category.title }}" style="object-fit: cover; transition: transform 0.5s ease;">
+                    {% endif %}
+                    
+                    <div class="category-overlay position-absolute w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(44, 62, 80, 0.85); opacity: 0; transition: opacity 0.3s ease;">
+                        <div class="text-center text-white">
+                            <h3 class="h3 font-weight-bold text-uppercase mb-3" style="letter-spacing: 2px;">{{ category.title }}</h3>
+                            <p class="mb-3">Explore Collection</p>
+                            <div class="btn btn-outline-light btn-lg px-4 py-2 rounded-pill">
+                                <i class="fas fa-arrow-right ml-2"></i>
+                            </div>
                         </div>
                     </div>
-                    <h6> <a class="reset-anchor" href="{% url 'store:product-detail' product.id %}">{{ product.name }}</a></h6>
-                    <p class="small text-muted">${{product.price}}</p>
+                    
+                    <div class="category-title position-absolute" style="bottom: 30px; left: 30px; right: 30px;">
+                        <h4 class="h4 font-weight-bold text-white text-uppercase mb-0" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.7); letter-spacing: 1px;">{{ category.title }}</h4>
+                    </div>
                 </div>
             </div>
             {% endfor %}
             {% endif %}
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- SERVICES-->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <div class="row text-center">
-                <div class="col-lg-4 mb-3 mb-lg-0">
-                    <div class="d-inline-block">
-                        <div class="media align-items-end">
-                            <svg class="svg-icon svg-icon-big svg-icon-light">
-                                <use xlink:href="#delivery-time-1"> </use>
-                            </svg>
-                            <div class="media-body text-left ml-3">
-                                <h6 class="text-uppercase mb-1">Free shipping</h6>
-                                <p class="text-small mb-0 text-muted">Free shipping worlwide</p>
+<!-- TRENDING PRODUCTS with Modern Grid -->
+<section class="products-section py-5" style="background: #f8f9fa;">
+    <div class="container" style="max-width: 1400px;">
+        <div class="text-center mb-5">
+            <p class="text-muted text-uppercase mb-2" style="font-size: 0.9rem; letter-spacing: 1px;">Handpicked for You</p>
+            <h2 class="h2 font-weight-bold mb-4" style="color: #2c3e50;">Top Trending Products</h2>
+            <div class="divider mx-auto mb-4" style="width: 60px; height: 3px; background: #2c3e50;"></div>
+        </div>
+        
+        <div class="row">
+            {% if products %}
+            {% for product in products|slice:":4" %}
+            <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                <div class="product-card bg-white rounded-3 overflow-hidden" style="box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: all 0.3s ease; border: 2px solid #f0f0f0;">
+                    <div class="product-image-container position-relative overflow-hidden" style="height: 250px;">
+                        <a href="{% url 'store:product-detail' product.slug %}">
+                            {% if product.product_image %}
+                            <img class="product-image w-100 h-100" src="{{ product.product_image.url }}" alt="{{product.name}}" style="object-fit: cover; transition: transform 0.5s ease;">
+                            {% else %}
+                            <img class="product-image w-100 h-100" src="{% static 'img/product-1.jpg' %}" alt="{{product.name}}" style="object-fit: cover; transition: transform 0.5s ease;">
+                            {% endif %}
+                        </a>
+                        
+                        <div class="product-overlay position-absolute w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(44, 62, 80, 0.8); opacity: 0; transition: opacity 0.3s ease;">
+                            <div class="product-actions">
+                                <a class="btn btn-outline-light btn-sm rounded-pill mx-1" href="{% url 'store:add-to-wishlist' %}?prod_id={{ product.id }}" style="width: 45px; height: 45px; display: inline-flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-heart"></i>
+                                </a>
+                                <form action="{% url 'store:add-to-cart' %}" class="d-inline">
+                                    <input type="hidden" name="prod_id" value="{{product.id}}">
+                                    <button type="submit" class="btn btn-light btn-sm rounded-pill mx-1" style="width: 45px; height: 45px; background: #fff; color: #2c3e50;">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-4 mb-3 mb-lg-0">
-                    <div class="d-inline-block">
-                        <div class="media align-items-end">
-                            <svg class="svg-icon svg-icon-big svg-icon-light">
-                                <use xlink:href="#helpline-24h-1"> </use>
-                            </svg>
-                            <div class="media-body text-left ml-3">
-                                <h6 class="text-uppercase mb-1">24 x 7 service</h6>
-                                <p class="text-small mb-0 text-muted">Free shipping worlwide</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="d-inline-block">
-                        <div class="media align-items-end">
-                            <svg class="svg-icon svg-icon-big svg-icon-light">
-                                <use xlink:href="#label-tag-1"> </use>
-                            </svg>
-                            <div class="media-body text-left ml-3">
-                                <h6 class="text-uppercase mb-1">Festival offer</h6>
-                                <p class="text-small mb-0 text-muted">Free shipping worlwide</p>
-                            </div>
-                        </div>
+                    
+                    <div class="product-info p-4">
+                        <h6 class="product-title mb-2">
+                            <a class="text-decoration-none text-dark" href="{% url 'store:product-detail' product.slug %}" style="transition: color 0.3s ease;">
+                                {{ product.name|truncatewords:4 }}
+                            </a>
+                        </h6>
+                        <p class="product-price h5 mb-0 font-weight-bold" style="color: #2c3e50;">${{product.price}}</p>
                     </div>
                 </div>
             </div>
+            {% endfor %}
+            {% endif %}
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- NEWSLETTER-->
-    <section class="py-5">
-        <div class="container p-0">
-            <div class="row">
-                <div class="col-lg-6 mb-3 mb-lg-0">
-                    <h5 class="text-uppercase">Let's be friends!</h5>
-                    <p class="text-small text-muted mb-0">Nisi nisi tempor consequat laboris nisi.</p>
+<!-- SERVICES SECTION with Modern Icons -->
+<section class="services-section py-5" style="background: #2c3e50;">
+    <div class="container" style="max-width: 1400px;">
+        <div class="row text-center text-white">
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <div class="service-item p-4">
+                    <div class="service-icon mb-3">
+                        <i class="fas fa-shipping-fast" style="font-size: 3rem; color: #ffffff;"></i>
+                    </div>
+                    <h5 class="font-weight-bold mb-2">Free Shipping</h5>
+                    <p class="mb-0" style="opacity: 0.9;">Free shipping worldwide on all orders</p>
                 </div>
-                <div class="col-lg-6">
-                    <form action="#">
-                        <div class="input-group flex-column flex-sm-row mb-3">
-                            <input class="form-control form-control-lg py-3" type="email" placeholder="Enter your email address" aria-describedby="button-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-dark btn-block" id="button-addon2" type="submit">Subscribe</button>
-                            </div>
-                        </div>
-                    </form>
+            </div>
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <div class="service-item p-4">
+                    <div class="service-icon mb-3">
+                        <i class="fas fa-headset" style="font-size: 3rem; color: #ffffff;"></i>
+                    </div>
+                    <h5 class="font-weight-bold mb-2">24/7 Support</h5>
+                    <p class="mb-0" style="opacity: 0.9;">Round the clock customer support</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="service-item p-4">
+                    <div class="service-icon mb-3">
+                        <i class="fas fa-tags" style="font-size: 3rem; color: #ffffff;"></i>
+                    </div>
+                    <h5 class="font-weight-bold mb-2">Best Offers</h5>
+                    <p class="mb-0" style="opacity: 0.9;">Amazing deals and discounts</p>
                 </div>
             </div>
         </div>
-    </section>
-</div>
+    </div>
+</section>
+
+<!-- NEWSLETTER SECTION -->
+<section class="newsletter-section py-5" style="background: #2c3e50;">
+    <div class="container" style="max-width: 1400px;">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0 text-white">
+                <h3 class="h3 font-weight-bold mb-2">Stay Updated!</h3>
+                <p class="mb-0" style="opacity: 0.9;">Get the latest updates on new arrivals and exclusive offers.</p>
+            </div>
+            <div class="col-lg-6">
+                <form class="newsletter-form">
+                    <div class="input-group">
+                        <input type="email" class="form-control form-control-lg border-0 rounded-pill" placeholder="Enter your email address" style="padding: 15px 25px;">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary btn-lg rounded-pill px-4" type="submit" style="background: linear-gradient(45deg, #ff6b6b, #ee5a6f); border: none;">
+                                Subscribe
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Modern Homepage Animations and Effects */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+/* Floating Shapes */
+.floating-shapes .shape {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+}
+
+.shape-1 {
+    width: 80px;
+    height: 80px;
+    top: 20%;
+    right: 10%;
+    animation-delay: -2s;
+}
+
+.shape-2 {
+    width: 120px;
+    height: 120px;
+    top: 60%;
+    right: 20%;
+    animation-delay: -4s;
+}
+
+.shape-3 {
+    width: 60px;
+    height: 60px;
+    top: 40%;
+    left: 10%;
+    animation-delay: -1s;
+}
+
+/* Hero Button Hover Effect */
+.btn-outline-light:hover {
+    background-color: #ffffff;
+    color: #2c3e50;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+}
+
+/* Category Card Hover Effects */
+.category-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+}
+
+.category-card:hover .category-image {
+    transform: scale(1.1);
+}
+
+.category-card:hover .category-overlay {
+    opacity: 1;
+}
+
+/* Product Card Hover Effects */
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.05);
+}
+
+.product-card:hover .product-overlay {
+    opacity: 1;
+}
+
+.product-card:hover .product-title a {
+    color: #667eea !important;
+}
+
+/* Service Items Hover */
+.service-item:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease;
+}
+
+/* Newsletter Form Styling */
+.newsletter-form .form-control:focus {
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+    border-color: #667eea;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: 60vh;
+        text-align: center;
+    }
+    
+    .display-3 {
+        font-size: 2.5rem;
+    }
+    
+    .category-card {
+        height: 300px;
+    }
+    
+    .floating-shapes {
+        display: none;
+    }
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Loading animation for images */
+.product-image, .category-image {
+    transition: opacity 0.3s ease;
+}
+
+.product-image:hover, .category-image:hover {
+    opacity: 0.9;
+}
+</style>
 
 {% endblock content %}

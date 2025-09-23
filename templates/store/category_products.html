@@ -2,116 +2,345 @@
 {% load static %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row">
-        <div class="col-12">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{% url 'store:home' %}">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ category.title }}</li>
-                </ol>
-            </nav>
-            <h1 class="h2 mb-4">{{ category.title }}</h1>
-            <p class="text-muted mb-4">{{ products.paginator.count }} products found</p>
-        </div>
-    </div>
-
-    <div class="row">
-        {% if products %}
-            {% for product in products %}
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="product text-center">
-                    <div class="position-relative mb-3">
-                        <a class="d-block" href="{% url 'store:product-detail' product.slug %}">
-                            {% if product.product_image %}
-                            <img class="img-fluid w-100" src="{{ product.product_image.url }}" alt="{{ product.name|default:product.title }}" style="height: 300px; object-fit: cover;">
-                            {% else %}
-                            <img class="img-fluid w-100" src="{% static 'img/product-placeholder.jpg' %}" alt="{{ product.name|default:product.title }}" style="height: 300px; object-fit: cover;">
-                            {% endif %}
-                        </a>
-
-                        <div class="product-overlay">
-                            <ul class="mb-0 list-inline">
-                                <li class="list-inline-item m-0 p-0">
-                                    <a class="btn btn-sm btn-outline-dark" href="{% url 'store:add-to-wishlist' %}?prod_id={{ product.id }}" title="Add to Wishlist">
-                                        <i class="far fa-heart"></i>
-                                    </a>
-                                </li>
-                                <li class="list-inline-item m-0 p-0">
-                                    <form action="{% url 'store:add-to-cart' %}" method="get">
-                                        <input type="hidden" name="prod_id" value="{{ product.id }}">
-                                        <button type="submit" class="btn btn-sm btn-dark">Add to Cart</button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <h6>
-                        <a class="reset-anchor text-decoration-none" href="{% url 'store:product-detail' product.slug %}">
-                            {{ product.name|default:product.title|truncatewords:5 }}
-                        </a>
-                    </h6>
-                    <p class="small text-muted">${{ product.price }}</p>
-                </div>
-            </div>
-            {% endfor %}
-
-            <!-- Pagination -->
-            <div class="col-12">
-                {% if products.has_other_pages %}
-                <nav aria-label="Product pagination">
-                    <ul class="pagination justify-content-center">
-                        {% if products.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page=1" aria-label="First">
-                                    <span aria-hidden="true">&laquo;&laquo;</span>
-                                </a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ products.previous_page_number }}" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                        {% endif %}
-
-                        {% for num in products.paginator.page_range %}
-                            {% if products.number == num %}
-                                <li class="page-item active">
-                                    <span class="page-link">{{ num }}</span>
-                                </li>
-                            {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-
-                        {% if products.has_next %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ products.next_page_number }}" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ products.paginator.num_pages }}" aria-label="Last">
-                                    <span aria-hidden="true">&raquo;&raquo;</span>
-                                </a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </nav>
-                {% endif %}
-            </div>
-
-        {% else %}
-            <div class="col-12 text-center py-5">
-                <div class="alert alert-info">
-                    <h4>No products found</h4>
-                    <p>Sorry, there are no products available in this category at the moment.</p>
-                    <a href="{% url 'store:home' %}" class="btn btn-primary">Continue Shopping</a>
-                </div>
-            </div>
-        {% endif %}
-    </div>
+<!-- Breadcrumb with dark blue-gray styling -->
+<div class="breadcrumb-section" style="background: #3c4f5c; padding: 15px 0; border-bottom: 3px solid #2c3e50;">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb bg-transparent mb-0" style="padding: 0;">
+        <li class="breadcrumb-item">
+          <a href="{% url 'store:home' %}" style="color: #ffffff; font-weight: 600; text-decoration: none;">
+            <i class="fas fa-home mr-1"></i>HOME
+          </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page" style="color: #bdc3c7; font-weight: bold; text-transform: uppercase;">
+          {{ category.title }}
+        </li>
+      </ol>
+    </nav>
+  </div>
 </div>
+
+<!-- Main Content with Cultural Background -->
+<div class="main-content" style="background: #faf7f2; min-height: 100vh; position: relative;">
+  <!-- Subtle Indian Pattern Background -->
+  <div class="cultural-pattern" style="position: absolute; width: 100%; height: 100%; opacity: 0.03; background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><path d=\"M50 15 Q35 30 50 45 Q65 30 50 15z\" fill=\"%23ff6600\"/><circle cx=\"50\" cy=\"70\" r=\"8\" fill=\"%23138808\"/></svg>'); background-repeat: repeat; background-size: 60px 60px;"></div>
+  
+  <div class="container py-4" style="position: relative; z-index: 2;">
+    <!-- Category Header -->
+    <div class="category-header mb-4">
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <h1 class="category-title mb-2" style="color: #8B4513; font-weight: 700; font-size: 2.2rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
+            {{ category.title }}
+          </h1>
+          <div class="results-info d-flex align-items-center">
+            <span class="badge badge-pill" style="background: linear-gradient(45deg, #ff6600, #ff9933); color: white; padding: 8px 15px; font-size: 0.9rem;">
+              {{ products.paginator.count }} Products
+            </span>
+            <div class="decorative-line ml-3" style="width: 40px; height: 2px; background: linear-gradient(45deg, #ff6600, #B8860B);"></div>
+          </div>
+        </div>
+        
+        <!-- Sort Options -->
+        <div class="sort-section">
+          <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" style="border: 2px solid #ff6600; color: #8B4513; font-weight: 600; border-radius: 25px; padding: 8px 20px;" data-toggle="dropdown">
+              <i class="fas fa-sort-amount-down mr-2"></i>Sort By
+            </button>
+            <div class="dropdown-menu" style="border: none; box-shadow: 0 8px 25px rgba(0,0,0,0.15);">
+              <a class="dropdown-item" href="#" style="color: #8B4513; padding: 10px 20px;">Price: Low to High</a>
+              <a class="dropdown-item" href="#" style="color: #8B4513; padding: 10px 20px;">Price: High to Low</a>
+              <a class="dropdown-item" href="#" style="color: #8B4513; padding: 10px 20px;">Newest First</a>
+              <a class="dropdown-item" href="#" style="color: #8B4513; padding: 10px 20px;">Popular</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="products-grid">
+      {% if products %}
+        <div class="row">
+          {% for product in products %}
+          <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4">
+            <div class="product-card bg-white rounded-lg overflow-hidden shadow-sm" style="border: 1px solid #e8d5c4; transition: all 0.3s ease; position: relative;">
+              
+              <!-- Product Image Container -->
+              <div class="product-image-container position-relative" style="height: 280px; overflow: hidden; background: #fff;">
+                <a href="{% url 'store:product-detail' product.slug %}" class="d-block h-100">
+                  {% if product.product_image %}
+                  <img class="product-image w-100 h-100" src="{{ product.product_image.url }}" alt="{{ product.name|default:product.title }}" style="object-fit: contain; transition: transform 0.4s ease; padding: 15px;">
+                  {% else %}
+                  <img class="product-image w-100 h-100" src="{% static 'img/product-placeholder.jpg' %}" alt="{{ product.name|default:product.title }}" style="object-fit: contain; transition: transform 0.4s ease; padding: 15px;">
+                  {% endif %}
+                </a>
+
+                <!-- Hover Overlay -->
+                <div class="product-overlay position-absolute w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(139, 69, 19, 0.9); opacity: 0; transition: opacity 0.3s ease; top: 0; left: 0;">
+                  <div class="overlay-actions text-center">
+                    <a href="{% url 'store:product-detail' product.slug %}" class="btn btn-light btn-sm mb-2 px-4 py-2" style="border-radius: 25px; font-weight: 600; color: #8B4513; border: 2px solid #fff;">
+                      <i class="fas fa-eye mr-1"></i>View Details
+                    </a><br>
+                    <form action="{% url 'store:add-to-cart' %}" method="get" class="d-inline">
+                      <input type="hidden" name="prod_id" value="{{ product.id }}">
+                      <button type="submit" class="btn btn-sm px-4 py-2" style="background: linear-gradient(45deg, #ff6600, #ff9933); color: white; border: none; border-radius: 25px; font-weight: 600;">
+                        <i class="fas fa-shopping-cart mr-1"></i>Add to Cart
+                      </button>
+                    </form>
+                  </div>
+                </div>
+
+                <!-- Wishlist Button -->
+                <div class="wishlist-btn position-absolute" style="top: 15px; right: 15px; z-index: 3;">
+                  <a href="{% url 'store:add-to-wishlist' %}?prod_id={{ product.id }}" class="btn btn-sm rounded-circle shadow-sm" style="width: 40px; height: 40px; background: rgba(255, 255, 255, 0.9); color: #ff6600; border: 1px solid #ff6600; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-heart"></i>
+                  </a>
+                </div>
+              </div>
+
+              <!-- Product Info -->
+              <div class="product-info p-3" style="border-top: 1px solid #f0ebe4;">
+                <h6 class="product-title mb-2" style="color: #8B4513; font-weight: 600; line-height: 1.3; min-height: 40px;">
+                  <a href="{% url 'store:product-detail' product.slug %}" class="text-decoration-none" style="color: inherit; transition: color 0.3s ease;">
+                    {{ product.name|default:product.title|truncatewords:6 }}
+                  </a>
+                </h6>
+                
+                <!-- Rating Stars -->
+                <div class="rating mb-2">
+                  <i class="fas fa-star" style="color: #FFD700; font-size: 0.9rem;"></i>
+                  <i class="fas fa-star" style="color: #FFD700; font-size: 0.9rem;"></i>
+                  <i class="fas fa-star" style="color: #FFD700; font-size: 0.9rem;"></i>
+                  <i class="fas fa-star" style="color: #FFD700; font-size: 0.9rem;"></i>
+                  <i class="far fa-star" style="color: #ddd; font-size: 0.9rem;"></i>
+                  <span class="text-muted ml-1" style="font-size: 0.8rem;">(4.0)</span>
+                </div>
+
+                <!-- Price Section -->
+                <div class="price-section d-flex align-items-center justify-content-between">
+                  <div class="price-info">
+                    <span class="current-price h5 mb-0 font-weight-bold" style="color: #B8860B;">₹{{ product.price }}</span>
+                    {% if product.old_price %}
+                    <span class="old-price text-muted ml-2" style="text-decoration: line-through; font-size: 0.9rem;">₹{{ product.old_price }}</span>
+                    {% endif %}
+                  </div>
+                  {% if product.old_price %}
+                  <span class="discount-badge badge" style="background: #138808; color: white; font-size: 0.7rem;">
+                    {% widthratio product.old_price|floatformat:0|add:0 product.price|floatformat:0|add:0 100 as discount %}
+                    {{ discount|floatformat:0 }}% OFF
+                  </span>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Pagination with Indian Styling -->
+        <div class="row mt-5">
+          <div class="col-12">
+            {% if products.has_other_pages %}
+            <nav aria-label="Product pagination" class="d-flex justify-content-center">
+              <ul class="pagination" style="border: none;">
+                {% if products.has_previous %}
+                  <li class="page-item">
+                    <a class="page-link" href="?page=1" style="background: #fff; border: 2px solid #ff6600; color: #8B4513; border-radius: 8px 0 0 8px; font-weight: 600;">
+                      <i class="fas fa-angle-double-left"></i>
+                    </a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ products.previous_page_number }}" style="background: #fff; border: 2px solid #ff6600; color: #8B4513; margin-left: -1px; font-weight: 600;">
+                      <i class="fas fa-angle-left"></i>
+                    </a>
+                  </li>
+                {% endif %}
+
+                {% for num in products.paginator.page_range %}
+                  {% if products.number == num %}
+                    <li class="page-item active">
+                      <span class="page-link" style="background: linear-gradient(45deg, #ff6600, #ff9933); border: 2px solid #ff6600; color: white; margin-left: -1px; font-weight: bold;">{{ num }}</span>
+                    </li>
+                  {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+                    <li class="page-item">
+                      <a class="page-link" href="?page={{ num }}" style="background: #fff; border: 2px solid #ff6600; color: #8B4513; margin-left: -1px; font-weight: 600;">{{ num }}</a>
+                    </li>
+                  {% endif %}
+                {% endfor %}
+
+                {% if products.has_next %}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ products.next_page_number }}" style="background: #fff; border: 2px solid #ff6600; color: #8B4513; margin-left: -1px; font-weight: 600;">
+                      <i class="fas fa-angle-right"></i>
+                    </a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ products.paginator.num_pages }}" style="background: #fff; border: 2px solid #ff6600; color: #8B4513; border-radius: 0 8px 8px 0; margin-left: -1px; font-weight: 600;">
+                      <i class="fas fa-angle-double-right"></i>
+                    </a>
+                  </li>
+                {% endif %}
+              </ul>
+            </nav>
+            {% endif %}
+          </div>
+        </div>
+
+      {% else %}
+        <!-- No Products Found -->
+        <div class="no-products text-center py-5">
+          <div class="empty-state" style="max-width: 400px; margin: 0 auto;">
+            <div class="indian-motif mb-4" style="font-size: 4rem; color: #ff9933; opacity: 0.6;">
+              <i class="fas fa-search"></i>
+            </div>
+            <h3 class="mb-3" style="color: #8B4513; font-weight: 600;">No Products Found</h3>
+            <p class="text-muted mb-4">Sorry, there are no products available in this category at the moment.</p>
+            <a href="{% url 'store:home' %}" class="btn btn-lg px-4 py-3" style="background: linear-gradient(45deg, #ff6600, #ff9933); color: white; border: none; border-radius: 25px; font-weight: 600;">
+              <i class="fas fa-arrow-left mr-2"></i>Continue Shopping
+            </a>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Custom CSS for Indian Cultural Theme -->
+<style>
+/* Product Card Hover Effects */
+.product-card {
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(255, 102, 0, 0.2) !important;
+  border-color: #ff6600 !important;
+}
+
+.product-card:hover .product-image {
+  transform: scale(1.05);
+}
+
+.product-card:hover .product-overlay {
+  opacity: 1;
+}
+
+.product-card:hover .product-title a {
+  color: #ff6600 !important;
+}
+
+/* Wishlist Button Hover */
+.wishlist-btn a:hover {
+  background: #ff6600 !important;
+  color: white !important;
+  transform: scale(1.1);
+}
+
+/* Cultural Elements */
+.decorative-line {
+  border-radius: 2px;
+}
+
+/* Breadcrumb Styling */
+.breadcrumb-item + .breadcrumb-item::before {
+  content: "▸";
+  color: #B8860B;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.breadcrumb-item a:hover {
+  color: #ff6600 !important;
+  text-decoration: none;
+}
+
+/* Sort Dropdown */
+.dropdown-toggle:focus, .dropdown-toggle:active {
+  box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.25) !important;
+}
+
+.dropdown-item:hover {
+  background: linear-gradient(45deg, #ff6600, #ff9933) !important;
+  color: white !important;
+}
+
+/* Pagination Hover Effects */
+.page-link:hover {
+  background: linear-gradient(45deg, #ff6600, #ff9933) !important;
+  color: white !important;
+  border-color: #ff6600 !important;
+  transform: translateY(-2px);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .category-title {
+    font-size: 1.8rem !important;
+  }
+  
+  .sort-section {
+    margin-top: 1rem;
+  }
+  
+  .product-card {
+    margin-bottom: 1.5rem;
+  }
+  
+  .breadcrumb-section {
+    padding: 10px 0;
+  }
+}
+
+/* Loading Animation */
+.product-image {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+.product-image[src] {
+  background: none;
+  animation: none;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Cultural Pattern Animation */
+.cultural-pattern {
+  animation: float 20s infinite ease-in-out;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Indian Flag Colors Accent */
+.badge-pill {
+  position: relative;
+  overflow: hidden;
+}
+
+.badge-pill::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s;
+}
+
+.badge-pill:hover::before {
+  left: 100%;
+}
+</style>
+
 {% endblock content %}
